@@ -14,10 +14,10 @@ void setup()
 
 void loop()
 {
-  runZone1(255); // speed: 0–255
-  runZone2(255);
-  runZone3(255);
-  runZone4(255); // NEW
+  runZone1(255); // zone1
+  runZone2(255); //zone2
+  runZone3(255); //zone3
+  runZone4(255); // zone4
 }
 
 // Functions

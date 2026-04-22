@@ -7,7 +7,7 @@ time.sleep(2)  # let Arduino reset
 
 def set_zone(zone, speed):
     """zone: 1-4, speed: 0-100%"""
-    speed = max(0, min(100, speed))  # clamp to valid range
+    speed = max(0, min(100, speed)) 
     command = f"Z{zone}:{(speed/100) * 255}\n"
     arduino.write(command.encode())
 

@@ -1,21 +1,23 @@
 import serial
 import time
 
-# Change COM port accordingly (e.g., COM3 on Windows, /dev/ttyUSB0 on Linux/Mac)
-arduino = serial.Serial('COM3', 9600)
-time.sleep(2)  # wait for connection
+arduino = serial.Serial(port='/dev/cu.usbmodem1201', baudrate=9600, timeout=1)
+# Mac/Linux: port='/dev/ttyUSB0'
+time.sleep(2)  # let Arduino reset
 
-def set_speed(speed):
-    speed = max(0, min(255, speed))
-    arduino.write(f"{speed}\n".encode())
+def set_zone(zone, speed):
+    """zone: 1-4, speed: 0-255"""
+    speed = max(0, min(255, speed))  # clamp to valid range
+    command = f"Z{zone}:{speed}\n"
+    arduino.write(command.encode())
 
-# Example usage
-while True:
-    set_speed(255)  # full speed
-    time.sleep(5)
+def stop_all():
+    arduino.write(b"STOP\n")
 
-    set_speed(100)  # slower
-    time.sleep(5)
-
-    set_speed(0)    # stop
-    time.sleep(5)
+# --- Example usage ---
+set_zone(1, 255)   # zone 1 full speed
+set_zone(2, 128)   # zone 2 half speed
+set_zone(3, 200)   # zone 3 ~78% speed
+set_zone(4, 255)   # zone 4 full speed
+#time.sleep(3)
+#stop_all()

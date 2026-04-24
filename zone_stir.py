@@ -15,10 +15,10 @@ def stop_all():
     arduino.write(b"STOP\n")
 
 # --- Example usage ---
-set_zone(1, 78)   # zone 1 
-set_zone(2, 60)   # zone 2 
-set_zone(3, 70)   # zone 3 
-set_zone(4, 60)   # zone 4
+set_zone(1, 39.21)   # zone 1 
+set_zone(2, 58)   # zone 2 
+set_zone(3, 29.21)   # zone 3 
+set_zone(4, 58)   # zone 4
 time.sleep(3)
 #stop_all()
 

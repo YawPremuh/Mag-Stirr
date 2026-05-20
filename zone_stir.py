@@ -1,13 +1,20 @@
 import serial
 import time
 
-arduino1 = serial.Serial(port='/dev/cu.usbmodem11201', baudrate=9600, timeout=1)
-arduino2 = serial.Serial(port='/dev/cu.usbserial-1130', baudrate=9600, timeout=1) #board2
-arduino3 = serial.Serial(port='/dev/cu.usbserial-1140', baudrate=9600, timeout=1) #board3
+coms = {'windows': ['COM3', 'COM4', 'COM5'], 
+        'mac': ['/dev/cu.usbmodem11201', '/dev/cu.usbserial-1130', '/dev/cu.usbserial-1140']}
+
+
+def get_arduino_port(coms, os_type):
+    arduino1 = serial.Serial(port=coms[os_type][0], baudrate=9600, timeout=1)
+    arduino2 = serial.Serial(port=coms[os_type][1], baudrate=9600, timeout=1) #board2
+    arduino3 = serial.Serial(port=coms[os_type][2], baudrate=9600, timeout=1) #board3
+    return arduino1, arduino2, arduino3
 
 # Mac/Linux: port='/dev/ttyUSB0'
 time.sleep(2)  # let Arduino reset
 
+arduino1 , arduino2, arduino3 = get_arduino_port(coms, 'windows')  # change 'windows' to 'mac' if using Mac/Linux
 boards = {
     1 : arduino1,
     2 : arduino2,
@@ -16,7 +23,7 @@ boards = {
 
 def set_zone(board, zone, speed):
     """zone: 1-4, speed: 0-100%"""
-    speed = max(0, min(100, speed)) 
+    speed = max(0, min(40, speed)) 
     command = f"Z{zone}:{(speed/100) * 255}\n"
     boards[board].write(command.encode())
 
@@ -24,7 +31,7 @@ def set_zone(board, zone, speed):
 def stop_all():
     for b in boards:
         for m in range(1, 4):
-            arduino.write(b"STOP\n")
+            boards[b].write(b"STOP\n")
 
 #function to run all zones
 #def run_all():

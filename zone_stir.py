@@ -23,7 +23,7 @@ boards = {
 
 def set_zone(board, zone, speed):
     """zone: 1-4, speed: 0-100%"""
-    speed = max(0, min(40, speed)) 
+    speed = max(40, min(60, speed)) 
     command = f"Z{zone}:{(speed/100) * 255}\n"
     boards[board].write(command.encode())
 
@@ -57,6 +57,30 @@ def run_ind():
     set_zone(3, 4, 60)   # zone 4
 
 run_ind()
+
+def set_zones(self, zone_map: dict):
+    """
+    Set multiple stirrer zones in one call.
+
+    Args:
+        zone_map: dict mapping (board, zone) -> speed_percent
+                  board: 1-3
+                  zone:  1-4
+                  speed: 0-100 (will be clamped to the floor at SPEED_FLOOR_PCT)
+
+    Example:
+        controller.set_zones({
+            (1, 1): 60,   # board 1, zone 1, 60%
+            (1, 2): 60,
+            (2, 1): 40,   # below floor -> raised to SPEED_FLOOR_PCT
+            (3, 3): 0,    # 0 stops that zone
+        })
+
+    Zones not in the dict are left unchanged. To stop a zone explicitly,
+    pass it with speed 0.
+    """
+    for (board, zone), speed in zone_map.items():
+        self.set_zone(board, zone, speed)
 time.sleep(3)
 #stop_all()
 
